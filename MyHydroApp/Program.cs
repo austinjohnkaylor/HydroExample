@@ -1,9 +1,14 @@
-var builder = WebApplication.CreateBuilder(args);
+using Hydro.Configuration;
 
-// Add services to the container.
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+// Add services to the DI container.
 builder.Services.AddRazorPages();
 
-var app = builder.Build();
+// Add Hydro to the DI container.
+builder.Services.AddHydro();
+
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -17,6 +22,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Make sure the web app uses Hydro. Needs to be after UseRouting and before UseStaticFiles to work correctly.
+app.UseHydro(builder.Environment);
 
 app.UseAuthorization();
 
